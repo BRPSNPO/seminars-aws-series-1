@@ -1,16 +1,8 @@
 # Infraestrutura na AWS
 
-## Sumário
-
-- Objetivo
-- [Apresentação]()
-- Demonstração
-- Resultados esperados
-
-
 ### Objetivo 
 
-Este webinar teve como objetivo explicar os principais serviços da AWS: 
+Esta apresentação teve como objetivo explicar os principais serviços da AWS: 
 
 - EC2
 - RDS
@@ -27,4 +19,7 @@ Uma demonstração foi feita utilizando os serviços de Infraestrutura VPC e EC2
 
 Aplicação Hello World rodando na arquitetura demonstrada. 
 
+### TDB
+
+Cloudformation para deploy
 
