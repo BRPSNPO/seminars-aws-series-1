@@ -5,4 +5,4 @@ Apresentamos uma seminário para falar do Cloudwatch! ... e como Observability n
 Segue arquitetura do que foi construido durante a apresentação! 
 
 
-!(arquitetura.png)[Arquitetura]
+![Arquitetura](arquitetura.png)
