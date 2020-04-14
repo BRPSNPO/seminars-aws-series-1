@@ -21,7 +21,7 @@ Este webinar teve como objetivo explicar os principais serviços da AWS:
 
 Uma demonstração foi feita utilizando os serviços de Infraestrutura VPC e EC2, com Load Balancer e Autoscalling.
 
-![Arquitetura]()
+![Arquitetura](arquitetura.png)
 
 ### Resultados esperados 
 
