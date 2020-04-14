@@ -18,10 +18,10 @@ Abaixo a lista de temas e as documentações, arquiteturas e decks das utilizada
 
 ## Quando ?
 
-De 31/03 à 02/06 - Todas as Terças Feiras as 14h. 
+De 31/03 à 09/06 - Todas as Terças Feiras as 14h. 
 
 
-```Com exceção a 21/04, Feriado de Tiradentes, a apresentação será no dia 22/04```
+```Com exceção a 21/04```
 
 Para participar, envie seu email para: `amandaqt@amazon.com` com o Assunto: `Seminarios Online COVID19 - Quero participar!`
 
