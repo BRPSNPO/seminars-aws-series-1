@@ -1,0 +1,281 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: "Template para criacao de recursos AWS para containers"
+
+
+Parameters:
+  VpcID:
+    Type: String
+    Default: vpc-07d174b95c2a54f31
+    Description: "VPC ID"
+  
+  ClusterName:
+    Type: String
+    Default: ecs-doesangue-app
+    Description: "Nome do cluster ECS"
+
+  ServiceName:
+    Type: String
+    Default: service-doesangue-app
+    Description: "Nome do Service ECS"
+
+  TaskName:
+    Type: String
+    Default: family-doesangue-app
+    Description: "Nome do Task Definition ECS"
+  
+  BalanceName:
+    Type: String
+    Default: alb-doesangue-app
+    Description: "Nome do Balance"
+
+  TargetName:
+    Type: String
+    Default: tgg-doesangue-app
+    Description: "Nome do TargetGroup"
+
+  SecurityGroup1Name:
+    Type: String
+    Default: scg-app-doesangue
+    Description: "Nome do Security Group Web"
+
+  SecurityGroup2Name:
+    Type: String
+    Default: scg-doesangue-app
+    Description: "Nome do Security Group ECS"
+  
+  Cname:
+    Type: String
+    Default: www.amandaquinto.com.br
+    Description: "HOST que deverá ser usado no ALB"  
+
+  RepoName:
+    Type: String
+    Default: ecr-cloudgirls
+    Description: "Name do Registry" 
+
+  CPU:
+    Type: String
+    Default: 1024
+    Description: "Quantidade de vCpus para o container"
+  
+  Memory:
+    Type: String
+    Default: 2GB
+    Description: "Quantidade de Gbs de memoria para o container"
+  
+ 
+  Logroup:
+    Type: String
+    Default: "/aws/ecs/app"
+    Description: "Nome do LogGroup"
+
+  PriorityHTTP:
+    Type: String
+    Default: 1
+    Description: "Prioridade da Rule HTTP"
+    
+  ContainerName: 
+    Type: String
+    Default: container
+    Description: "Nome do container na Task Definition"
+    
+  ContainerPort: 
+    Type: String
+    Default: 8080
+    Description: "Porta do Container na Task Definition"
+
+  ContainerImage: 
+    Type: String
+    Default: "node:carbon"
+    Description: "Imagem do Container na Task Definition"
+
+Resources:
+  SecurityGroupWeb:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref SecurityGroup1Name
+      GroupDescription: "Security Group do ALB"
+      VpcId: !Ref VpcID
+      SecurityGroupIngress:
+      - 
+        IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+      - 
+        IpProtocol: tcp
+        FromPort: '443'
+        ToPort: '443'
+        CidrIp: 0.0.0.0/0
+
+  SecurityGroupCluster:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref SecurityGroup2Name
+      GroupDescription: "Security Group do ECS"
+      VpcId: !Ref VpcID
+      SecurityGroupIngress:
+        -
+          SourceSecurityGroupId: !Ref SecurityGroupWeb
+          IpProtocol: -1
+          FromPort: 0
+          ToPort: 65535
+  ECSRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ECSRole
+      AssumeRolePolicyDocument:
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        -
+          PolicyName: PolicyPortal
+          PolicyDocument:
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:DescribeLogGroups
+                  - logs:DeleteLogGroup
+                  - logs:DescribeLogStreams
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: '*'
+              -
+                Effect: Allow
+                Action:
+                  - ecr:*
+                Resource: '*'
+
+  TargetGroup1:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckPort: 8080
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 4
+      Matcher:
+        HttpCode: 200
+      Name: !Ref TargetName
+      Port: 8080
+      Protocol: HTTP
+      TargetType: ip
+      UnhealthyThresholdCount: 4
+      VpcId: !Ref VpcID
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      Subnets:
+        - subnet-0f2857309907f55ba
+        - subnet-01e705e2889fe6239
+      Name: !Ref BalanceName
+      LoadBalancerAttributes:
+      - Key: idle_timeout.timeout_seconds
+        Value: '60'
+      SecurityGroups: 
+        - !Ref SecurityGroupWeb
+      
+  ListenerHTTP:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref TargetGroup1
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: '80'
+      Protocol: HTTP
+
+  HTTPListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup1
+      Conditions:
+        - Field: host-header
+          Values:
+            - !Ref Cname
+        - Field: path-pattern
+          Values: 
+            - "/*"
+      Priority: !Ref PriorityHTTP
+      ListenerArn:
+        Ref: ListenerHTTP
+
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref Logroup
+      RetentionInDays: 90
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Cpu: !Ref CPU
+      Memory: !Ref Memory
+      TaskRoleArn:
+        Ref: ECSRole
+      ExecutionRoleArn:
+        Ref: ECSRole
+      Family: !Ref TaskName
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
+        -
+          Name: !Ref ContainerName
+          Image: !Ref ContainerImage
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref RepoName
+
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster:
+        Ref: Cluster
+      ServiceName: !Ref ServiceName
+      TaskDefinition:
+        Ref: TaskDefinition
+      DesiredCount: 0
+      LaunchType: FARGATE
+      LoadBalancers:
+        - 
+          TargetGroupArn:
+            Ref: TargetGroup1
+          ContainerPort: !Ref ContainerPort
+          ContainerName: !Ref ContainerName
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: 
+            - !Ref SecurityGroupCluster
+          Subnets:
+            - subnet-0f2857309907f55ba
+            - subnet-01e705e2889fe6239
+         
+    DependsOn: 
+      - HTTPListenerRule
+      - LoadBalancer
+      - SecurityGroupCluster
