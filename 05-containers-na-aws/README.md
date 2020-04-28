@@ -88,4 +88,31 @@ Insira:
 Para criar um Fargate Profile, execute: 
 `eksctl create fargateprofile --cluster prod --region us-east-1 --name alb-name-app --namespace app-name`
 
+Como vamos utilizar a imagem no ECR, adicione a seguinte policy a sua cluster role:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGetImage",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetAuthorizationToken"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+- Clone este repositório:
+`git clone ...`
+
+- Entre na pasta shark-app: 
+`kubectl apply -f .`
+
+
 
