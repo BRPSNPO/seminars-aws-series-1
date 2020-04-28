@@ -2,9 +2,26 @@
 
 # Docker
 
+Temos uma aplicação de exemplo onde poderemos utilizar o Dockerfile pra fazer o build da imagem docker.
+
+- Clone este repositório
+- Entre na pasta doe-info-app/app
+- Rode o comando: `docker build . -t donate-blood`
+
+Utilizaremos como Registry o ECR da AWS, para saber mais: https://docs.aws.amazon.com/pt_br/AmazonECR/latest/userguide/what-is-ecr.html
+
+- Após fazer o login no Registry conforme documentação, fazemos o Push da imagem para o registry: 
+
+`docker push 631486845952.dkr.ecr.us-east-1.amazonaws.com/donate-blood:latest`
+
+Pronto, nossa imagem docker com a aplicação informativa sobre doação de sangue já está no registry! 
 
 # ECS
 
+Para criar a estrutrura do ECS, rode o CloudFormation: ecs.yml
+
+
+` Lembre-se de alterar a VPC e subnets para os seus respectivos `
 
 # EKS 
 
@@ -111,8 +128,14 @@ Como vamos utilizar a imagem no ECR, adicione a seguinte policy a sua cluster ro
 - Clone este repositório:
 `git clone ...`
 
-- Entre na pasta shark-app: 
+- Entre na pasta doe-info-app/manifests: 
 `kubectl apply -f .`
 
 
+# Documentações de apoio
+
+https://docs.aws.amazon.com/pt_br/AmazonECR/latest/userguide/what-is-ecr.html
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html
+https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
+https://eksworkshop.com/
 
