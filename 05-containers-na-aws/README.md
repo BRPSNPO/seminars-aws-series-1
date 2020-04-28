@@ -137,5 +137,5 @@ Como vamos utilizar a imagem no ECR, adicione a seguinte policy a sua cluster ro
 https://docs.aws.amazon.com/pt_br/AmazonECR/latest/userguide/what-is-ecr.html
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html
 https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
-
+https://eksworkshop.com/
 
