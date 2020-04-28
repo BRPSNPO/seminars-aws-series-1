@@ -21,7 +21,7 @@ eksctl create cluster \
 - Checar se o cluster está criado e se o kubectl está configurado: 
 `kubectl get nodes`
 
-- Deploy de uma aplicação de exemplo:
+### Deploy Ingress Controller ALB
 
 - Criar Ingress ALB: 
 
@@ -83,7 +83,9 @@ Insira:
 
 - Cheque se o ingress controller está rodando: `kubectl get pods -n kube-system`
 
+### Deploy aplicação de exemplo 
 
-
+Para criar um Fargate Profile, execute: 
+`eksctl create fargateprofile --cluster prod --region us-east-1 --name alb-name-app --namespace app-name`
 
 
