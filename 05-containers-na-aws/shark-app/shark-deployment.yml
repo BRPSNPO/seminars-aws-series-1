@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "shark-deployment"
+  namespace: "shark-game"
+spec:
+  selector:
+    matchLabels:
+      app: "shark"
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: "shark"
+    spec:
+      containers:
+      - image: 631486845952.dkr.ecr.us-east-1.amazonaws.com/donate-blood:latest
+        imagePullPolicy: Always
+        name: "shark"
+        ports:
+        - containerPort: 8080
