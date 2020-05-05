@@ -9,7 +9,7 @@ Abaixo a lista de temas e as documentações, arquiteturas e decks das utilizada
 - [Autoscalling - Escalando para os primeiros 100k requests](https://github.com/mandalvesq/webinars-aws-series-1/tree/master/03-autoscalling-100k-requests)
 - [Cloudwatch Logs e ELK](https://github.com/mandalvesq/webinars-aws-series-1/tree/master/04-cloudwatchlogs-elk)
 - [Containers na AWS](https://github.com/mandalvesq/seminars-aws-series-1/tree/master/05-containers-na-aws)
-- [Serverless na AWS]()
+- [Serverless na AWS](https://github.com/mandalvesq/seminars-aws-series-1/tree/master/06-serverless-na-aws)
 - [Devops na AWS]()
 - [Machine Learning na AWS]()
 - [Como migrar Workloads para a Nuvem]()
