@@ -98,6 +98,13 @@ Para fazer o deploy automático depois de fazer as alterações no Frontend, bas
 
 É necessário ter AWS Cli instalado para isto: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 
+### Enviar Logs para o ElasticSearch
+
+Como no seminário 04 nós criamos um ElasticSearch Service com Kibana, podemos agrupar os logs desta função Lambda neste mesmo ESS.
+
+Siga: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_ES_Stream.html
+
+
 ### Certificate Manager
 
 Para colocar seu domínio como um Alias no CloudFront é necessário ter um certificado SSL válido, a AWS tem uma ferramenta que gera certificados: https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html
