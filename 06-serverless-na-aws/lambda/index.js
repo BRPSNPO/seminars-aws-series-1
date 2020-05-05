@@ -8,7 +8,7 @@ exports.handler = (event, context, callback) => {
             date: Date.now(),
             message: event.key1
         },
-        TableName: "doe"
+        TableName: "tablename"
     };
     console.log("esse e o evento: " + event.key1)
     console.log(params)
