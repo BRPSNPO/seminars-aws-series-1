@@ -53,6 +53,15 @@ Para armazenar as mensagens enviadas pelos pacientes iremos utilizar o DynamoDB 
 - Crie uma tabela: https://docs.aws.amazon.com/pt_br/amazondynamodb/latest/developerguide/SampleData.CreateTables.html
     - A única configuração necessária é a configuração de uma Primary Key (Partitin Key) com nome DATE e tipo NUMBER.
 
+## IAM
+
+A sua função lambda nao tem permissão ainda para inserir dados no DynamoDB. Para isto, iremos alterar a Role do Lambda.
+
+Siga: https://docs.aws.amazon.com/pt_br/IAM/latest/UserGuide/roles-managingrole-editing-console.html
+
+Pode selecionar a Policy: DynamoDB Full Access. `Esta não é uma boa prática mas é apenas um teste, indico após o termino da demonstração criar uma policy especifica.`
+
+
 ## Ajustes finais 
 
 Agora você precisará apontar a aplicação front-end para o back-end no API Gateway e o Back-end para o DynamoDB correto.
@@ -69,7 +78,15 @@ Front-end, coloque o endereço de seu API Gateway:
 
 Back-end, coloque o nome da tabela do DynamoDB:
 
-
+```
+    const params = {
+        Item: {
+            date: Date.now(),
+            message: event.key1
+        },
+        TableName: "ALTERE AQUI"
+    };
+```
 
 
 
