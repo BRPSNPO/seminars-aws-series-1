@@ -1,0 +1,113 @@
+.navbar {
+    margin-bottom: 0;
+    background: #000000;
+}
+
+body {
+    background: #000000;
+    color: #ffffff;
+    font-family: 'Merriweather', sans-serif;
+}
+
+h1,
+h2 {
+    font-weight: bold;
+}
+
+p {
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.jumbotron {
+    background: #ff4f4f;
+    color: white;
+    text-align: center;
+}
+
+.jumbotron p {
+    color: white;
+    font-size: 26px;
+}
+
+.btn-primary {
+    color: #fff;
+    text-color: #000000;
+    border-color: white;
+    margin-bottom: 5px;
+    background-color: gray;
+}
+
+img,
+video,
+audio {
+    margin-top: -300px;
+    width: 400px;
+    margin-left: -100px;
+}
+
+div.caption {
+    float: left;
+    clear: both;
+}
+
+button {
+    cursor: pointer;
+    background: #ff4f4f;
+    width: 300px;
+    border-radius: 4px;
+    height: 40px;
+    transition: filter 0.2s;
+    border: 0;
+    margin-left: -90px;
+}
+
+button.caption {
+    clear: both;
+}
+
+input {
+    color: black;
+    border-radius: 2px;
+    border: 0;
+    width: 300px;
+    margin-right: 40%;
+    margin-left: 30%;
+    height: 40px;
+    font-size: 20px;
+}
+
+textarea {
+    margin-left: 30%;
+    margin-right: 40%;
+    margin-top: 20px;
+    max-width: 300px;
+    max-height: 200px;
+    min-width: 300px;
+    min-height: 200px;
+    border: 0px;
+    border-radius: 2px;
+    font-size: 20px;
+    color: black;
+
+}
+
+label {
+    margin: 0px;
+    color: #ff4f4f;
+}
+
+button:active{
+    background:blue;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    color: #41414d;
+    font-size: 18px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
