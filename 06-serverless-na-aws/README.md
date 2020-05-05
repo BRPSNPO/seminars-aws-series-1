@@ -90,12 +90,17 @@ Back-end, coloque o nome da tabela do DynamoDB:
 
 ## Tips
 
+### Deploy Frontend no S3
+
 Para fazer o deploy automático depois de fazer as alterações no Frontend, basta rodar o comando: `yarn build && yarn deploy`.
 
 ... Mas antes, package.json tem um script de deploy que envia os arquivos para o seu bucket S3. Altere o nome do bucket para o que voce criou e salve o arquivo.
 
 É necessário ter AWS Cli instalado para isto: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 
+### Certificate Manager
+
+Para colocar seu domínio como um Alias no CloudFront é necessário ter um certificado SSL válido, a AWS tem uma ferramenta que gera certificados: https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html
 
 
 
