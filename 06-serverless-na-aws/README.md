@@ -88,7 +88,13 @@ Back-end, coloque o nome da tabela do DynamoDB:
     };
 ```
 
+## Tips
 
+Para fazer o deploy automático depois de fazer as alterações no Frontend, basta rodar o comando: yarn build && yarn deploy.
+
+... Mas antes, package.json tem um script de deploy que envia os arquivos para o seu bucket S3. Altere o nome do bucket para o que voce criou e salve o arquivo.
+
+É necessário ter AWS Cli instalado para isto: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 
 
 
