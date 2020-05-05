@@ -100,7 +100,7 @@ Para fazer o deploy automático depois de fazer as alterações no Frontend, bas
 
 ### Enviar Logs para o ElasticSearch
 
-Como no seminário 04 nós criamos um ElasticSearch Service com Kibana, podemos agrupar os logs desta função Lambda neste mesmo ESS.
+Como no seminário [CloudWatch Logs e ELK](https://github.com/mandalvesq/seminars-aws-series-1/tree/master/04-cloudwatchlogs-elk) nós criamos um ElasticSearch Service com Kibana, podemos agrupar os logs desta função Lambda neste mesmo ESS.
 
 Siga: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_ES_Stream.html
 
