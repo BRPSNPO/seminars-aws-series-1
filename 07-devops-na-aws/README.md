@@ -22,4 +22,9 @@ Os resources declarados neste arquivo .yml serão criados em sua conta AWS.
 
 # Deployment
 
+Iremos utilizar a Stack de Code da AWS para fazer o nosso deploy. Então primeiro de tudo, precisamos gerar uma AMI com o agente do Code deploy.
+
+- Instalar agente code deploy: https://docs.aws.amazon.com/codedeploy/latest/userguide/codedeploy-agent-operations-install-ubuntu.html
+
+
 
