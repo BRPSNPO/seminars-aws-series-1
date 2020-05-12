@@ -1,6 +1,6 @@
 # Devops na AWS
 
-No seminário sobre Devops, vamos configurar toda Infraestrutura de serviços que criamos até aqui na região de us-east-1, migrar para região de us-west-2 utilizando infraestrutura como código (CloudFormation). E fazer o deploy automatizado de todos os nossos códigos utilizando a Stack de Code da AWS.
+No seminário sobre Devops vamos focar em IaC e Deployment. Vamos pegar uma das aplicações que desenvolvemos e recriar ela inteira com Cloud Formation e CI /CD utilizando os serviços da AWS.
 
 # Infraestrutura como Código
 
@@ -25,6 +25,14 @@ Os resources declarados neste arquivo .yml serão criados em sua conta AWS.
 Iremos utilizar a Stack de Code da AWS para fazer o nosso deploy. Então primeiro de tudo, precisamos gerar uma AMI com o agente do Code deploy.
 
 - Instalar agente code deploy: https://docs.aws.amazon.com/codedeploy/latest/userguide/codedeploy-agent-operations-install-ubuntu.html
+
+- Criar os arquivos de configuração. Como estamos trabalhando com Code Build e Code Deploy. Deixei os arquivos de exemplo aqui na pasta `scripts`. 
+
+Aqui materiais de apoio sobre estes arquivos:
+
+   - https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html
+   - https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html
+    
 
 
 
