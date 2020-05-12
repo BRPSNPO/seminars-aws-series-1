@@ -1,0 +1,149 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: "Template ec2 and autoscalling and LB"
+
+Parameters:
+
+  ASGName:
+    Type: String
+    Default: asg-name
+    Description: "AutoScalling Group Name"
+
+  LoadBalancerName:
+    Type: String
+    Default: elb-name
+    Description: "Load Balancer Name"
+
+  SGELB:
+    Type: String 
+    Default: SG-ELB-Name
+    Description: "SSecurity Group for ELB Name" 
+
+  SGEC2: 
+    Type: String 
+    Default: SG-EC2-Name
+    Description: "Security Group for ELB Name" 
+
+  AmiID:
+    Type: String
+    Default: ami-053d91e49cf5d6193
+    Description: "AMI ID"
+
+  InstanceType:
+    Type: String
+    Default: t3.large
+    Description: "Instance Type"
+
+  PolicyTargetValue:
+    Type: Number
+    Default: 50.0
+    Description: "Scale CPU based"
+
+
+Resources: 
+
+  ELBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref SGELB
+      GroupDescription: "Security Group do ALB"
+      VpcId: vpc-07d174b95c2a54f31
+      SecurityGroupIngress:
+      -
+        IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref SGEC2
+      GroupDescription: "Security Group do EC2"
+      VpcId: vpc-07d174b95c2a54f31
+      SecurityGroupIngress:
+        -
+          IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          SourceSecurityGroupId: !Ref ELBSecurityGroup
+
+  AutoScalingGroup: 
+    DependsOn: 
+      - LaunchConfig
+      - ClassicLoadBalancer
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Ref ASGName
+      AvailabilityZones: 
+        - us-east-1a
+        - us-east-1b
+      VPCZoneIdentifier:
+        - subnet-0f2857309907f55ba
+        - subnet-01e705e2889fe6239
+      Cooldown: 300
+      HealthCheckGracePeriod: 300
+      HealthCheckType: ELB
+      LoadBalancerNames:
+        - !Ref ClassicLoadBalancer
+      LaunchConfigurationName: !Ref LaunchConfig
+      MinSize: "1"
+      MaxSize: "15"
+      TerminationPolicies:
+        - OldestLaunchConfiguration
+        - ClosestToNextInstanceHour
+        - OldestInstance
+      MetricsCollection:
+        - Granularity: 1Minute
+
+  AutoScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: !Ref PolicyTargetValue
+
+  LaunchConfig:
+    DependsOn: EC2SecurityGroup
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      AssociatePublicIpAddress: false
+      EbsOptimized: true
+      IamInstanceProfile: role-ec2-s3
+      ImageId: !Ref AmiID
+      InstanceMonitoring: true
+      InstanceType: !Ref InstanceType
+      KeyName: quinto-virginia
+      SecurityGroups:
+        - !Ref EC2SecurityGroup
+
+  ClassicLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      ConnectionDrainingPolicy:
+        Enabled: true
+        Timeout: 300
+      ConnectionSettings:
+        IdleTimeout: 60
+      HealthCheck:
+        HealthyThreshold: 4
+        Interval: 30
+        Target: HTTP:80/
+        Timeout: 10
+        UnhealthyThreshold: 2
+      LoadBalancerName: !Ref LoadBalancerName
+      Listeners:
+        - InstancePort: 80
+          InstanceProtocol: HTTP
+          LoadBalancerPort: 80
+          Protocol: HTTP
+      SecurityGroups:
+        - !Ref ELBSecurityGroup
+      Subnets:
+        - subnet-0f2857309907f55ba
+        - subnet-01e705e2889fe6239
+
