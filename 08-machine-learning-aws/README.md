@@ -40,3 +40,6 @@ Fizemos a integração da nossa aplicação `doe-info` com um chatbot criado uti
 - Importe o Chatbot no LEX: chatbot.zip 
 - Abra o arquivo chatbot.html 
 
+### Tips
+
+- Altere dentro do chatbot.html o Identity Pool ID que voce vai pegar no Cognito.
