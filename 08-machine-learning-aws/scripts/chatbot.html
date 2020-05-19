@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Chatbot</title>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.388.0.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700" rel="stylesheet" type="text/css">
+
+	<style language="text/css">
+		input#wisdom {
+			padding: 4px;
+			font-size: 1em;
+			width: 400px
+		}
+
+		input::placeholder {
+			color: #ccc;
+			font-style: italic;
+		}
+
+		p.userRequest {
+			margin: 4px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			min-width: 50%;
+			max-width: 85%;
+			float: left;
+			background-color: #7d7;
+		}
+
+		p.lexResponse {
+			margin: 4px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			min-width: 50%;
+			max-width: 85%;
+			float: right;
+			background-color: #bbf;
+			font-style: italic;
+		}
+
+		p.lexError {
+			margin: 4px;
+			padding: 4px 10px 4px 10px;
+			border-radius: 4px;
+			text-align: right;
+			min-width: 50%;
+			max-width: 85%;
+			float: right;
+			background-color: #f77;
+		}
+	</style>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark navbar-static-top navbar-expand-md">
+        <div class="container">
+            <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"> <span class="sr-only">Toggle navigation</span>
+            </button> <a class="navbar-brand" href="#">Blood Donation </a>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav mr-auto">
+                    <li class="active nav-item"><a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item"><a href="/doe" class="nav-link">Doe</a>
+                    </li>
+                    <li class="nav-item"><a href="/feedback" class="nav-link">Feedback</a>
+                    </li>
+                    <li class="nav-item"><a href="/chatbot" class="nav-link">Chatbot</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+	<h1 style="text-align:  center; margin-top: 50px;">Bloodinho Chatbot</h1>
+	<div id="conversation" style="margin-left: 750px;width: 400px; height: 400px; border: 1px solid #ccc; background-color: #eee; padding: 4px; overflow: scroll"></div>
+	<form id="chatform" style="margin-left: 3px;margin-top: 10px" onsubmit="return pushChat();">
+		<input type="text" style="margin-left: 750px"id="wisdom" size="80" value="" placeholder="Digite sua mensagem...">
+	</form>
+	<br/>
+	<input type="button" value="Limpar" style="margin-left: 750px; width: 410px; height: 50px" onclick="document.getElementById('conversation').innerHTML='';document.getElementById('wisdom').focus();">
+	<script type="text/javascript">
+		// set the focus to the input box
+		document.getElementById("wisdom").focus();
+
+		// Initialize the Amazon Cognito credentials provider
+		AWS.config.region = 'us-east-1'; // Region
+		AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+			// Provide your Pool Id here
+			IdentityPoolId: 'us-east-1:XXXX',
+		});
+
+		var translate = new AWS.Translate({ apiVersion: '2017-07-01' });
+		var lexruntime = new AWS.LexRuntime();
+		var lexUserId = 'Paula' + Date.now();
+
+		function pushChat() {
+			// if there is text to be sent...
+			var wisdomText = document.getElementById('wisdom');
+			if (wisdomText && wisdomText.value && wisdomText.value.trim().length > 0) {
+
+				// disable input to show we're sending it
+				var wisdom = wisdomText.value.trim();
+				wisdomText.value = 'Enviando...';
+				wisdomText.disabled = true;
+
+				showRequest(wisdom);
+				translateToEnglish(wisdom, sendToBot);				
+			}
+			// we always cancel form submission
+			return false;
+		}
+
+		function translateToEnglish(text, callback) {
+			var translateparams = {
+				SourceLanguageCode: 'pt', /* required */
+				TargetLanguageCode: 'en', /* required */
+				Text: text, /* required */
+			};
+
+			translate.translateText(translateparams, callback);			
+		}
+
+		function translateToPortuguese(text, callback) {
+			var translateparams = {
+				SourceLanguageCode: 'en', /* required */
+				TargetLanguageCode: 'pt', /* required */
+				Text: text, /* required */
+			};
+
+			translate.translateText(translateparams, callback);			
+		}
+
+		// send message to the bot
+		function sendToBot(err, data) {
+			if (err) console.log(err, err.stack); // an error occurred
+			else {
+				var sessionAttributes = {};			
+				var params = {
+					botAlias: 'xx',
+					botName: 'xxx',
+					inputText: data.TranslatedText,
+					userId: lexUserId,
+					sessionAttributes: sessionAttributes
+				};
+
+				lexruntime.postText(params, function (err, data) {
+					if (err) {
+						console.log(err, err.stack);
+						showError('Error:  ' + err.message + ' (see console for details)')
+					}
+					if (data) {
+						// capture the sessionAttributes for the next cycle
+						sessionAttributes = data.sessionAttributes;
+						// show response and/or error/dialog status
+
+						showResponse(data.message);
+						/*
+						translateToPortuguese(data.message, function(err, result) {
+							data.message = result.TranslatedText;
+							showResponse(data);
+						});
+						*/
+					}
+				});
+			}
+		}
+
+		function showRequest(daText) {
+
+			var conversationDiv = document.getElementById('conversation');
+			var requestPara = document.createElement("P");
+			requestPara.className = 'userRequest';
+			requestPara.appendChild(document.createTextNode(daText));
+			conversationDiv.appendChild(requestPara);
+			conversationDiv.scrollTop = conversationDiv.scrollHeight;
+		}
+
+		function showError(daText) {
+			var conversationDiv = document.getElementById('conversation');
+			var errorPara = document.createElement("P");
+			errorPara.className = 'lexError';
+			errorPara.appendChild(document.createTextNode(daText));
+			conversationDiv.appendChild(errorPara);
+			conversationDiv.scrollTop = conversationDiv.scrollHeight;
+		}
+
+		function showResponse(message) {
+			var conversationDiv = document.getElementById('conversation');
+			var responsePara = document.createElement("P");
+			responsePara.className = 'lexResponse';
+			if (message) {
+				message = message.replace(/&lt;/g, "<");
+				message = message.replace(/&gt;/g, ">");
+				responsePara.innerHTML = message;
+			}
+			conversationDiv.appendChild(responsePara);
+			conversationDiv.scrollTop = conversationDiv.scrollHeight;
+
+			// re-enable input
+			var wisdomText = document.getElementById('wisdom');
+			wisdomText.value = '';
+			wisdomText.disabled = false;
+			wisdomText.focus();			
+		}
+	</script>
+</body>
+
+</html>
