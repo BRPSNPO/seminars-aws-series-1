@@ -61,7 +61,8 @@ aws iam create-policy \
 
 ```
   - Crie as roles de RBAC
-```kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
 ```
 
 - Crie uma AWS Role (Lembra do ARN da policy? A hora é agora)
